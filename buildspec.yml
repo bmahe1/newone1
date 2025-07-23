@@ -2,23 +2,23 @@ version: 0.2
 
 env:
   variables:
-    S3_BUCKET: "test-frontend-007-007"  
+    S3_BUCKET: "test-frontend-007-007"
 
 phases:
   install:
     commands:
-      - echo Installing dependencies...
+      - echo "Installing dependencies..."
       - npm install
   build:
     commands:
-      - echo Building the app...
+      - echo "Building the app..."
       - npm run build
   post_build:
     commands:
-      - echo Deploying to S3 bucket: $S3_BUCKET
-      - aws s3 sync build/ s3://$S3_BUCKET/ --delete
+      - "echo Deploying to S3 bucket: $S3_BUCKET"
+      - "aws s3 sync build/ s3://$S3_BUCKET/ --delete"
 
 artifacts:
+  base-directory: build
   files:
     - '**/*'
-  base-directory: build
