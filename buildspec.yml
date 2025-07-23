@@ -2,7 +2,7 @@ version: 0.2
 
 env:
   variables:
-    S3_BUCKET: "test-frontend-007-007"  # 👈 Replace with your actual S3 bucket name
+    S3_BUCKET: "test-frontend-007-007"  
 
 phases:
   install:
