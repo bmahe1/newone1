@@ -1,12 +1,23 @@
 version: 0.2
 
+env:
+  variables:
+    S3_BUCKET: "test-frontend-007-007"  # 👈 Replace with your actual S3 bucket name
+
 phases:
   install:
     commands:
+      - echo Installing dependencies...
       - npm install
   build:
     commands:
+      - echo Building the app...
       - npm run build
+  post_build:
+    commands:
+      - echo Deploying to S3 bucket: $S3_BUCKET
+      - aws s3 sync build/ s3://$S3_BUCKET/ --delete
+
 artifacts:
   files:
     - '**/*'
