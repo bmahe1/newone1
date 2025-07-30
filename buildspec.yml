@@ -1,24 +1,23 @@
 version: 0.2
 
-env:
-  variables:
-    S3_BUCKET: "test-frontend-007-007"
-
 phases:
   install:
     commands:
-      - echo "Installing dependencies..."
-      - npm install
+      - echo Installing...
+  pre_build:
+    commands:
+      - echo Preparing artifacts...
   build:
     commands:
-      - echo "Building the app..."
-      - npm run build
+      - echo Build phase - nothing to compile
   post_build:
     commands:
-      - "echo Deploying to S3 bucket: $S3_BUCKET"
-      - "aws s3 sync build/ s3://$S3_BUCKET/ --delete"
+      - echo Build completed on `date`
 
 artifacts:
-  base-directory: build
   files:
-    - '**/*'
+    - appspec.yaml
+    - index.html
+    - scripts/fix_permissions.sh
+    - scripts/restart_apache.sh
+  base-directory: .
