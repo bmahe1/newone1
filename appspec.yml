@@ -1,0 +1,13 @@
+version: 0.0
+os: linux
+
+files:
+  - source: index.html
+    destination: /var/www/devsite
+    overwrite: yes
+
+hooks:
+  AfterInstall:
+    - location: scripts/restart_apache.sh
+      timeout: 30
+      runas: root
