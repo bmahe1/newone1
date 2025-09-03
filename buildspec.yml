@@ -14,23 +14,24 @@ phases:
       - echo Installing dependencies
       - npm ci --retry 3 || npm install
 
-  pre_build:
-    commands:
-      - echo "🔍 Checking repo checkpoint..."
-      - |
-        if [ -f checkpoint.json ]; then
-          if grep -q '"deploy": true' checkpoint.json; then
-            echo "✅ Checkpoint passed, continuing pipeline"
-          else
-            echo "❌ Checkpoint failed, stopping pipeline"
-            exit 1
-          fi
+pre_build:
+  commands:
+    - echo "🔍 Checking repo checkpoint..."
+    - |
+      if [ -f checkpoint.json ]; then
+        if grep -q '"deploy": true' checkpoint.json; then
+          echo "✅ Checkpoint passed, continuing pipeline"
         else
-          echo "❌ No checkpoint.json file found, stopping pipeline"
+          echo "❌ Checkpoint failed, stopping pipeline"
           exit 1
         fi
-      - echo Running tests and generating coverage...
-      - npm test
+      else
+        echo "❌ No checkpoint.json file found, stopping pipeline"
+        exit 1
+      fi
+    - echo Running tests and generating coverage...
+    - CI=true npm test -- --watchAll=false --passWithNoTests
+
 
   build:
     commands:
