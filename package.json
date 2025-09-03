@@ -1,12 +1,3 @@
-{
-  "name": "simple-frontend-app",
-  "version": "1.0.0",
-  "scripts": {
-    "test": "CI=true react-scripts test --env=jsdom --watchAll=false"
-  },
-  "dependencies": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
-    "react-scripts": "5.0.1"
-  }
+"scripts": {
+  "build": "react-scripts build"
 }
