@@ -1,23 +1,48 @@
 version: 0.2
 
+env:
+  variables:
+    S3_BUCKET_NAME: "maheshs3-s3"   # Replace with your actual S3 bucket name
+
 phases:
   install:
+    runtime-versions:
+      nodejs: 18
     commands:
-      - echo Installing...
+      - echo Pinning npm version
+      - npm install -g npm@8.19.3
+      - echo Installing dependencies
+      - npm ci --retry 3 || npm install
+
   pre_build:
     commands:
-      - echo Preparing artifacts...
+      - echo "🔍 Checking repo checkpoint..."
+      - |
+        if [ -f checkpoint.json ]; then
+          if grep -q '"deploy": true' checkpoint.json; then
+            echo "✅ Checkpoint passed, continuing pipeline"
+          else
+            echo "❌ Checkpoint failed, stopping pipeline"
+            exit 1
+          fi
+        else
+          echo "❌ No checkpoint.json file found, stopping pipeline"
+          exit 1
+        fi
+      - echo Running tests and generating coverage...
+      - npm test
+
   build:
     commands:
-      - echo Build phase - nothing to compile
+      - echo Building React App...
+      - npm run build
+
   post_build:
     commands:
-      - echo Build completed on `date`
+      - echo Deploying to S3...
+      - aws s3 sync build/ s3://$S3_BUCKET_NAME/ --delete
 
 artifacts:
+  base-directory: build
   files:
-    - appspec.yaml
-    - index.html
-    - scripts/fix_permissions.sh
-    - scripts/restart_apache.sh
-  base-directory: .
+    - '**/*'
